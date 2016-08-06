@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HgAdapter", "HgAdapter\HgAdapter.csproj", "{043B8DD1-64C7-46B2-95A1-E0BC7923596F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HgAdapter.Tests", "HgAdapter.Tests\HgAdapter.Tests.csproj", "{ECB458CE-2ADB-4E81-A861-F8F9CEB92907}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{043B8DD1-64C7-46B2-95A1-E0BC7923596F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{043B8DD1-64C7-46B2-95A1-E0BC7923596F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{043B8DD1-64C7-46B2-95A1-E0BC7923596F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{043B8DD1-64C7-46B2-95A1-E0BC7923596F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECB458CE-2ADB-4E81-A861-F8F9CEB92907}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECB458CE-2ADB-4E81-A861-F8F9CEB92907}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECB458CE-2ADB-4E81-A861-F8F9CEB92907}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECB458CE-2ADB-4E81-A861-F8F9CEB92907}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
