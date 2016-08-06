@@ -1,6 +1,8 @@
 ﻿Mercurial adapter for CCNet
 ===========================
 
+[![Build status](https://ci.appveyor.com/api/projects/status/ppb21yojce9idat0/branch/master?svg=true)](https://ci.appveyor.com/project/dxrobot/hgadapter/branch/master)
+
 Implements the [external source control](http://cruisecontrolnet.org/projects/ccnet/wiki/External) API.
 
 Usage:
