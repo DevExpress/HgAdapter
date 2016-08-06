@@ -54,7 +54,7 @@ namespace HgAdapter.Tests {
         }
 
         protected void Commit(string user, string message) {
-            ExecHG("commit -A -u \"" + user + "\" -m \"" + message + "\" -d 2001-02-03");
+            ExecHG("commit -A -u \"" + user + "\" -m \"" + message + "\" -d \"2001-02-03 +0300\"");
         }
 
         protected IEnumerable<XElement> ParseModifications() {
