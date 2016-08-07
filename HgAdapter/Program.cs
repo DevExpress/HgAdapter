@@ -57,9 +57,9 @@ namespace HgAdapter {
 
                     if(isInitialCheck || new HgInternals(_extra.RepoPath, _logger).HasRepoChangedSince(prevIntegrationDate)) {
                         var newTip = hg.GetTip(_extra.RevSet, prevTip);
-                        if(!String.IsNullOrEmpty(newTip) && newTip != prevTip) {
+                        if(!String.IsNullOrEmpty(newTip.Node) && newTip.Node != prevTip) {
                             _logger.PutToFile("new checkpoint: " + newTip);
-                            _state.AddCheckpoint(integrationDate, newTip);
+                            _state.AddCheckpoint(integrationDate, newTip.Node, newTip.Branch);
                         } else {
                             _logger.PutToFile("no new changesets");
                         }
@@ -149,7 +149,15 @@ namespace HgAdapter {
 
             _logger.PutToFile("hg log entries: " + log.Entries.Count);
 
+            if(!log.Entries.Any())
+                return;
+
+            var branch = log.Entries.Last().Branch;
+
             foreach(var entry in log.Entries) {
+                if(entry.Branch != branch)
+                    continue;
+
                 foreach(var path in entry.PathItems) {
                     var element = new XElement("Modification");
                     element.Add(new XElement("Comment", entry.Msg));

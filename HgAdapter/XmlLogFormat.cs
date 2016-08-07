@@ -20,6 +20,9 @@ namespace HgAdapter.XmlLogFormat {
         [XmlAttribute("node")]
         public string Hash;
 
+        [XmlElement("branch")]
+        public string Branch;
+
         [XmlElement("author")]
         public Author Author;
 

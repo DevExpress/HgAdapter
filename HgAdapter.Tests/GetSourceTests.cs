@@ -48,11 +48,11 @@ namespace HgAdapter.Tests {
         public void SpecificDates(string scenario) {            
             var date1 = new DateTime(2001, 01, 01, 9, 0, 0);
             CommitFile("1", "x", "x");
-            State.AddCheckpoint(date1, "8849afd50f950ce7f0fb93eead5260604e860246");
+            State.AddCheckpoint(date1, "8849afd50f950ce7f0fb93eead5260604e860246", "default");
 
             var date2 = new DateTime(2001, 01, 01, 9, 5, 0);
             CommitFile("2", "x", "x");
-            State.AddCheckpoint(date2, "a6544c4c325287f0d9886a5aeb54007069ce3fc3");
+            State.AddCheckpoint(date2, "a6544c4c325287f0d9886a5aeb54007069ce3fc3", "default");
 
             var archived2 = Path.Combine(_targetDir, "2");
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -45,6 +46,15 @@ namespace HgAdapter {
             }
         }
 
+        public class TipInfo {
+            public string Branch;
+            public string Node;
+
+            public override string ToString() {
+                return Node + " in branch '" + Branch + "'";
+            }
+        }
+
         public HgCli(string repoPath, Logger logger) {
             _repoPath = repoPath;
             _logger = logger;
@@ -73,18 +83,37 @@ namespace HgAdapter {
             }
         }
 
-        public string GetTip(string revset, string prevKnownTip) {
+        public TipInfo GetTip(string revset, string prevKnownTip) {
             // specifying prev tip makes search faster
             if(!String.IsNullOrEmpty(prevKnownTip))
                 revset = "(" + revset + ") and (" + prevKnownTip + ":)";
 
-            revset = "max(" + revset + ")";
+            string node = null;
+            string branch = null;
 
-            var args = new ArgumentsBuilder(_repoPath, "log")
-                .Append("-r", revset)
-                .Append("--template", "{node}");
+            while(true) {
+                var args = new ArgumentsBuilder(_repoPath, "log")
+                    .Append("-r", "max(" + revset + ")")
+                    .Append("--template", "{node} {branch}");
 
-            return Exec(args).Trim();
+                var output = Exec(args).Trim();
+                if(String.IsNullOrEmpty(output))
+                    break;
+
+                var nodeCandidate = output.Substring(0, 40);
+                if(nodeCandidate == prevKnownTip)
+                    break;
+
+                node = nodeCandidate;
+                branch = output.Substring(41);
+
+                revset += " - branch('" + branch.Replace("'", "\\'") + "')";
+            }
+
+            return new TipInfo {
+                Branch = branch,
+                Node = node
+            };
         }
 
         public void GetFiles(string revset, string include, string targetPath) {

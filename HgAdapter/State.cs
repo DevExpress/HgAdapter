@@ -16,10 +16,11 @@ namespace HgAdapter {
         [XmlArray]
         public List<Checkpoint> Checkpoints = new List<Checkpoint>();
 
-        public void AddCheckpoint(DateTime date, string tip) {
+        public void AddCheckpoint(DateTime date, string tip, string branch) {
             Checkpoints.Add(new Checkpoint { 
                 Date = date,
-                Tip = tip
+                Tip = tip,
+                Branch = branch
             });
         }
 
@@ -40,22 +41,27 @@ namespace HgAdapter {
         }
 
         public Range DateRangeToHashRange(DateTime startDate, DateTime endDate) {
-            var minHash = "";
-            var maxHash = "";
+            var minIndex = -1;
+            var maxIndex = -1;
 
-            foreach(var c in Checkpoints) {
-                if(String.IsNullOrEmpty(minHash))
-                    minHash = c.Tip;
+            for(var i = 0; i < Checkpoints.Count; i++) {
+                var c = Checkpoints[i];
 
-                if(c.Date <= startDate)
-                    minHash = c.Tip;
+                if(minIndex < 0 || c.Date <= startDate)
+                    minIndex = i;
+
                 if(c.Date <= endDate)
-                    maxHash = c.Tip;
+                    maxIndex = i;
+            }
+
+            if(maxIndex > -1) {
+                while(minIndex > 0 && Checkpoints[minIndex].Branch != Checkpoints[maxIndex].Branch)
+                    minIndex--;
             }
 
             return new Range {
-                Start = minHash,
-                End = maxHash
+                Start = Checkpoints[minIndex].Tip,
+                End = Checkpoints[maxIndex].Tip
             };        
         }
 
@@ -65,6 +71,9 @@ namespace HgAdapter {
 
             [XmlAttribute]
             public string Tip;
+
+            [XmlAttribute]
+            public string Branch;
         }
 
         public class Range {

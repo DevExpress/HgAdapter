@@ -44,6 +44,7 @@ namespace HgAdapter.Tests {
             var adapter = new Program();
             adapter.StateOverride = State;
             adapter.StdOut = adapter.StdErr = new StringWriter(_adaperOutputBuilder);
+            _adaperOutputBuilder.Clear();
             if(adapter.Run(args.Select(Convert.ToString).Concat(new[] { "--repo=" + TempRepoDir }).ToArray()) != 0)
                 throw new Exception(AdapterOutput);
         }
@@ -70,13 +71,16 @@ namespace HgAdapter.Tests {
         }
 
         protected void ExecHG(string args) {
-            Process.Start(new ProcessStartInfo { 
-                FileName = "hg.exe", 
-                Arguments = args, 
+            var p = Process.Start(new ProcessStartInfo {
+                FileName = "hg.exe",
+                Arguments = args,
                 WorkingDirectory = TempRepoDir,
                 UseShellExecute = false,
                 CreateNoWindow = true
-            }).WaitForExit();
+            });
+            p.WaitForExit();
+            if(p.ExitCode > 0)
+                throw new Exception("ExecHG failed");
         }
 
     }
