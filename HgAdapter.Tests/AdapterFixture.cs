@@ -44,6 +44,7 @@ namespace HgAdapter.Tests {
             var adapter = new Program();
             adapter.StateOverride = State;
             adapter.StdOut = adapter.StdErr = new StringWriter(_adaperOutputBuilder);
+            _adaperOutputBuilder.Clear();
             if(adapter.Run(args.Select(Convert.ToString).Concat(new[] { "--repo=" + TempRepoDir }).ToArray()) != 0)
                 throw new Exception(AdapterOutput);
         }

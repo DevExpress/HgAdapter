@@ -149,7 +149,15 @@ namespace HgAdapter {
 
             _logger.PutToFile("hg log entries: " + log.Entries.Count);
 
+            if(!log.Entries.Any())
+                return;
+
+            var branch = log.Entries.Last().Branch;
+
             foreach(var entry in log.Entries) {
+                if(entry.Branch != branch)
+                    continue;
+
                 foreach(var path in entry.PathItems) {
                     var element = new XElement("Modification");
                     element.Add(new XElement("Comment", entry.Msg));

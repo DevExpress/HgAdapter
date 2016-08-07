@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -78,13 +79,28 @@ namespace HgAdapter {
             if(!String.IsNullOrEmpty(prevKnownTip))
                 revset = "(" + revset + ") and (" + prevKnownTip + ":)";
 
-            revset = "max(" + revset + ")";
+            var nodes = new List<string>();
 
-            var args = new ArgumentsBuilder(_repoPath, "log")
-                .Append("-r", revset)
-                .Append("--template", "{node}");
+            while(true) {
+                var args = new ArgumentsBuilder(_repoPath, "log")
+                    .Append("-r", "max(" + revset + ")")
+                    .Append("--template", "{node} {branch}");
 
-            return Exec(args).Trim();
+                var output = Exec(args).Trim();
+                if(String.IsNullOrEmpty(output))
+                    break;
+
+                var node = output.Substring(0, 40);
+                if(node == prevKnownTip)
+                    break;
+
+                var branch = output.Substring(41);
+
+                nodes.Add(node);
+                revset += " - branch('" + branch + "')";
+            }
+
+            return nodes.LastOrDefault();
         }
 
         public void GetFiles(string revset, string include, string targetPath) {

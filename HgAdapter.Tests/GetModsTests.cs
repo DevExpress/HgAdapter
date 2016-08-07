@@ -153,6 +153,60 @@ namespace HgAdapter.Tests {
             AssertModificationElement(modifications.First(), "c78cc1f162b9 (Merge)", thisDate, "-", "x", "Interesting merge");
         }
 
+        [Test]
+        public void MultiBranchScenario() {
+            ExecHG("branch rel_f1");
+            CommitFile("f1_c1", "x", "x"); // 67c9dd245a216b232a26cab7a1310210f03234f4
+
+            ExecHG("branch rel_f2");
+            CommitFile("f2_c1", "x", "x"); // 468d7d162a91f84068c5fe5956e83218b6ceca03
+
+            ExecHG("update branch(rel_f1)");
+            CommitFile("f1_c2", "x", "x"); // 76e8989517aaf36cb6761893526b6b559a45f670
+
+            ExecHG("update branch(rel_f2)");
+            CommitFile("f2_c2", "x", "x"); // 96c7171b3d37add9de09d9a5078f8d9593b5880b
+
+            var revset = "branch('re:^rel(_.+)$')";
+            var time1 = new DateTime(2016, 8, 7);
+            var time2 = time1.AddMinutes(1);
+            var time3 = time1.AddMinutes(2);
+
+            // Pretend we already know branch rel_f1
+            State.AddCheckpoint(time1, "67c9dd245a216b232a26cab7a1310210f03234f4");
+
+            ExecAdapter(GETMODS, time2, time1, "--revset=" + revset);
+
+            Assert.AreEqual(
+                "76e8989517aaf36cb6761893526b6b559a45f670", 
+                State.Checkpoints.Last().Tip,
+                "should detect lowest tip among satisfying branches"
+            );
+
+            CollectionAssert.AreEqual(
+                new[] {
+                    "76e8989517aa (A)"
+                },
+                ParseModifications().Select(x => x.Element("Type").Value),
+                "should gather commits only from rel_f1 branch"
+            );
+
+            ExecAdapter(GETMODS, time3, time2, "--revset=" + revset);
+
+            Assert.AreEqual(
+                "96c7171b3d37add9de09d9a5078f8d9593b5880b", 
+                State.Checkpoints.Last().Tip
+            );
+
+            CollectionAssert.AreEqual(
+                new[] {
+                    "468d7d162a91 (A)",
+                    "96c7171b3d37 (A)"
+                },
+                ParseModifications().Select(x => x.Element("Type").Value),
+                "should not skip commits in rel_f2 branch"
+            );
+        }
 
 
     }
