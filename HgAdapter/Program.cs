@@ -57,9 +57,9 @@ namespace HgAdapter {
 
                     if(isInitialCheck || new HgInternals(_extra.RepoPath, _logger).HasRepoChangedSince(prevIntegrationDate)) {
                         var newTip = hg.GetTip(_extra.RevSet, prevTip);
-                        if(!String.IsNullOrEmpty(newTip) && newTip != prevTip) {
+                        if(!String.IsNullOrEmpty(newTip.Node) && newTip.Node != prevTip) {
                             _logger.PutToFile("new checkpoint: " + newTip);
-                            _state.AddCheckpoint(integrationDate, newTip);
+                            _state.AddCheckpoint(integrationDate, newTip.Node, newTip.Branch);
                         } else {
                             _logger.PutToFile("no new changesets");
                         }

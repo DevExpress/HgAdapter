@@ -46,6 +46,15 @@ namespace HgAdapter {
             }
         }
 
+        public class TipInfo {
+            public string Branch;
+            public string Node;
+
+            public override string ToString() {
+                return Node + " in branch '" + Branch + "'";
+            }
+        }
+
         public HgCli(string repoPath, Logger logger) {
             _repoPath = repoPath;
             _logger = logger;
@@ -74,12 +83,13 @@ namespace HgAdapter {
             }
         }
 
-        public string GetTip(string revset, string prevKnownTip) {
+        public TipInfo GetTip(string revset, string prevKnownTip) {
             // specifying prev tip makes search faster
             if(!String.IsNullOrEmpty(prevKnownTip))
                 revset = "(" + revset + ") and (" + prevKnownTip + ":)";
 
-            var nodes = new List<string>();
+            string node = null;
+            string branch = null;
 
             while(true) {
                 var args = new ArgumentsBuilder(_repoPath, "log")
@@ -90,17 +100,20 @@ namespace HgAdapter {
                 if(String.IsNullOrEmpty(output))
                     break;
 
-                var node = output.Substring(0, 40);
-                if(node == prevKnownTip)
+                var nodeCandidate = output.Substring(0, 40);
+                if(nodeCandidate == prevKnownTip)
                     break;
 
-                var branch = output.Substring(41);
+                node = nodeCandidate;
+                branch = output.Substring(41);
 
-                nodes.Add(node);
                 revset += " - branch('" + branch + "')";
             }
 
-            return nodes.LastOrDefault();
+            return new TipInfo {
+                Branch = branch,
+                Node = node
+            };
         }
 
         public void GetFiles(string revset, string include, string targetPath) {

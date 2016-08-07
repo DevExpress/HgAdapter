@@ -19,7 +19,7 @@ namespace HgAdapter.Tests {
             CommitFile("file1", "user1", "message1");
             ExecAdapter(GETMODS, "(NOW)", DateTime.Now.AddMinutes(-1));
 
-            CollectionAssert.Contains(LoggerOutput, "new checkpoint: c8143034b60fbc51883eb11cd20592b92f7d3dfb");
+            CollectionAssert.Contains(LoggerOutput, "new checkpoint: c8143034b60fbc51883eb11cd20592b92f7d3dfb in branch 'default'");
             CollectionAssert.Contains(LoggerOutput, "range: (c8143034b60fbc51883eb11cd20592b92f7d3dfb, c8143034b60fbc51883eb11cd20592b92f7d3dfb]");
             CollectionAssert.Contains(LoggerOutput, "range is empty or not defined");
 
@@ -44,13 +44,13 @@ namespace HgAdapter.Tests {
                 : thisDate.AddHours(-1);           
 
             CommitFile("file1", "user1", "message1");
-            State.AddCheckpoint(checkPointDate, "c8143034b60fbc51883eb11cd20592b92f7d3dfb");
+            State.AddCheckpoint(checkPointDate, "c8143034b60fbc51883eb11cd20592b92f7d3dfb", "default");
 
             CommitFile("file2", "user2", "message2");
             
             ExecAdapter(GETMODS, thisDate, prevDate);
 
-            CollectionAssert.Contains(LoggerOutput, "new checkpoint: 003205be8d3be4da1db065404c7aa83eb35fe8dc");
+            CollectionAssert.Contains(LoggerOutput, "new checkpoint: 003205be8d3be4da1db065404c7aa83eb35fe8dc in branch 'default'");
             CollectionAssert.Contains(LoggerOutput, "range: (c8143034b60fbc51883eb11cd20592b92f7d3dfb, 003205be8d3be4da1db065404c7aa83eb35fe8dc]");
             CollectionAssert.Contains(LoggerOutput, "hg log entries: 1");
 
@@ -75,7 +75,7 @@ namespace HgAdapter.Tests {
         [Test]
         public void RepoNotChangedOptimization() {
             CommitFile("file1", "user1", "message1");
-            State.AddCheckpoint(DateTime.Now, "c8143034b60fbc51883eb11cd20592b92f7d3dfb");
+            State.AddCheckpoint(DateTime.Now, "c8143034b60fbc51883eb11cd20592b92f7d3dfb", "default");
 
             Thread.Sleep(1000);
             ExecAdapter(GETMODS, DateTime.Now.AddMinutes(1), DateTime.Now);
@@ -86,7 +86,7 @@ namespace HgAdapter.Tests {
         [Test]
         public void RepoNotChangedOptimization_LockedRepo() {
             CommitFile("file1", "user1", "message1");
-            State.AddCheckpoint(DateTime.Now.AddMinutes(-5), "c8143034b60fbc51883eb11cd20592b92f7d3dfb");
+            State.AddCheckpoint(DateTime.Now.AddMinutes(-5), "c8143034b60fbc51883eb11cd20592b92f7d3dfb", "default");
             var waitCount = 0;
 
             var lockPath = Path.Combine(TempRepoDir, ".hg/store/lock");
@@ -111,7 +111,7 @@ namespace HgAdapter.Tests {
             var prevDate = thisDate.AddMinutes(-1);
 
             CommitFile("file1", "user1", "message1");
-            State.AddCheckpoint(prevDate, "c8143034b60fbc51883eb11cd20592b92f7d3dfb");
+            State.AddCheckpoint(prevDate, "c8143034b60fbc51883eb11cd20592b92f7d3dfb", "default");
 
             ExecAdapter(GETMODS, thisDate, prevDate);
 
@@ -142,7 +142,7 @@ namespace HgAdapter.Tests {
             ExecHG("merge new_feature");
             Commit("x", "Alien merge"); // f0a8b33c84f190be329d616bb37d39513dbaf76b
 
-            State.AddCheckpoint(prevDate, "1f278868556749e0a4ec13b58e0cc7a26074b625");
+            State.AddCheckpoint(prevDate, "1f278868556749e0a4ec13b58e0cc7a26074b625", "15_1");
 
             ExecAdapter(GETMODS, thisDate, prevDate, "--revset=branch(15_1)", "--include=interesting_file");
 
@@ -173,7 +173,7 @@ namespace HgAdapter.Tests {
             var time3 = time1.AddMinutes(2);
 
             // Pretend we already know branch rel_f1
-            State.AddCheckpoint(time1, "67c9dd245a216b232a26cab7a1310210f03234f4");
+            State.AddCheckpoint(time1, "67c9dd245a216b232a26cab7a1310210f03234f4", "rel_f1");
 
             ExecAdapter(GETMODS, time2, time1, "--revset=" + revset);
 
