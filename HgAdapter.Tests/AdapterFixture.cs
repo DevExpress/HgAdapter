@@ -70,13 +70,16 @@ namespace HgAdapter.Tests {
         }
 
         protected void ExecHG(string args) {
-            Process.Start(new ProcessStartInfo { 
-                FileName = "hg.exe", 
-                Arguments = args, 
+            var p = Process.Start(new ProcessStartInfo {
+                FileName = "hg.exe",
+                Arguments = args,
                 WorkingDirectory = TempRepoDir,
                 UseShellExecute = false,
                 CreateNoWindow = true
-            }).WaitForExit();
+            });
+            p.WaitForExit();
+            if(p.ExitCode > 0)
+                throw new Exception("ExecHG failed");
         }
 
     }
