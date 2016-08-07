@@ -208,6 +208,13 @@ namespace HgAdapter.Tests {
             );
         }
 
+        [Test]
+        public void SpecialCharsInBranchName() {
+            ExecHG("branch \"(\' \')\"");
+            CommitFile("any", "any", "any");
+            ExecAdapter(GETMODS, DateTime.Now, DateTime.MinValue, "--revset=tag(tip)");
+            Assert.AreEqual("(' ')", State.Checkpoints.Last().Branch);
+        }
 
     }
 

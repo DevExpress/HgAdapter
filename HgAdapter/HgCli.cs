@@ -107,7 +107,7 @@ namespace HgAdapter {
                 node = nodeCandidate;
                 branch = output.Substring(41);
 
-                revset += " - branch('" + branch + "')";
+                revset += " - branch('" + branch.Replace("'", "\\'") + "')";
             }
 
             return new TipInfo {
