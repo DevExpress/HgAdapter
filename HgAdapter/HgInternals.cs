@@ -36,11 +36,19 @@ namespace HgAdapter {
             if(!File.Exists(prevJournalPath))
                 return true;
 
-            var transactionDate = File.GetLastWriteTime(prevJournalPath);
+            var transactionDate = GetFileChangeTime(prevJournalPath);
             var changed = transactionDate > date;
             if(!changed)
                 _logger.PutToFile("repo not changed (last transaction at " + transactionDate.ToString("s") + ")");
             return changed;
+        }
+
+        static DateTime GetFileChangeTime(string path) {
+            try {
+                return Win32.GetFileChangeTime(path);
+            } catch {
+                return File.GetLastWriteTime(path);
+            }
         }
 
         string GetStorePath() {
