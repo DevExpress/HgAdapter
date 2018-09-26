@@ -55,7 +55,9 @@ namespace HgAdapter {
 
                     _logger.PutToFile("checking modifications from " + prevIntegrationDate.ToString("s") + " to " + integrationDate.ToString("s"));
 
-                    if(isInitialCheck || new HgInternals(_extra.RepoPath, _logger).HasRepoChangedSince(prevIntegrationDate)) {
+                    const int changeCheckDiff = -123;
+
+                    if(isInitialCheck || new HgInternals(_extra.RepoPath, _logger).HasRepoChangedSince(prevIntegrationDate.AddSeconds(changeCheckDiff))) {
                         var newTip = hg.GetTip(_extra.RevSet, prevTip);
                         if(!String.IsNullOrEmpty(newTip) && newTip != prevTip) {
                             _logger.PutToFile("new checkpoint: " + newTip);
