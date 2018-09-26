@@ -29,7 +29,7 @@ namespace HgAdapter.Tests {
             Assert.AreEqual(0, ParseModifications().Count());
 
             // NOTE initial check should not yield any modifications
-            // Otherwise CCNet would trigger repeated builds when \\CISERVER\LocalProjects\ are cleared 
+            // Otherwise CCNet would trigger repeated builds when \\CISERVER\LocalProjects\ are cleared
         }
 
         [TestCase(true), TestCase(false)]
@@ -41,13 +41,13 @@ namespace HgAdapter.Tests {
                 // external source control case (prev date is prev integration date)
                 ? prevDate
                 // ISourceSafeDriver case (prev date is prev check date)
-                : thisDate.AddHours(-1);           
+                : thisDate.AddHours(-1);
 
             CommitFile("file1", "user1", "message1");
             State.AddCheckpoint(checkPointDate, "c8143034b60fbc51883eb11cd20592b92f7d3dfb");
 
             CommitFile("file2", "user2", "message2");
-            
+
             ExecAdapter(GETMODS, thisDate, prevDate);
 
             CollectionAssert.Contains(LoggerOutput, "new checkpoint: 003205be8d3be4da1db065404c7aa83eb35fe8dc");
@@ -55,12 +55,12 @@ namespace HgAdapter.Tests {
             CollectionAssert.Contains(LoggerOutput, "hg log entries: 1");
 
             Assert.IsTrue(
-                LoggerOutput.Any(line => line.Contains("max((branch(default)) and (c8143034b60fbc51883eb11cd20592b92f7d3dfb:))")), 
+                LoggerOutput.Any(line => line.Contains("max((branch(default)) and (c8143034b60fbc51883eb11cd20592b92f7d3dfb:))")),
                 "optimized query for tip"
             );
 
             Assert.IsTrue(
-                LoggerOutput.Any(line => line.Contains("(branch(default)) and (c8143034b60fbc51883eb11cd20592b92f7d3dfb:003205be8d3be4da1db065404c7aa83eb35fe8dc - c8143034b60fbc51883eb11cd20592b92f7d3dfb)")), 
+                LoggerOutput.Any(line => line.Contains("(branch(default)) and (c8143034b60fbc51883eb11cd20592b92f7d3dfb:003205be8d3be4da1db065404c7aa83eb35fe8dc - c8143034b60fbc51883eb11cd20592b92f7d3dfb)")),
                 "query for changes in range"
             );
 
@@ -90,7 +90,7 @@ namespace HgAdapter.Tests {
             var waitCount = 0;
 
             var lockPath = Path.Combine(TempRepoDir, ".hg/store/lock");
-            File.WriteAllText(lockPath, "user:123");                        
+            File.WriteAllText(lockPath, "user:123");
             new Thread(delegate() {
                 while(true) {
                     waitCount = LoggerOutput.Count(line => line.Contains("transaction in progress"));
@@ -129,7 +129,7 @@ namespace HgAdapter.Tests {
 
             ExecHG("branch 15_1");
             CommitFile("README", "x", "x"); // 1f278868556749e0a4ec13b58e0cc7a26074b625
-            
+
             ExecHG("branch new_feature");
             CommitFile("interesting_file", "x", "x");
             ExecHG("update -r branch(15_1)");

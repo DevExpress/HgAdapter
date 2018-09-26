@@ -29,7 +29,7 @@ namespace HgAdapter.Tests {
             Logger.FileOverride = LoggerOutput;
 
             _adaperOutputBuilder = new StringBuilder();
-            
+
             Directory.CreateDirectory(TempRepoDir);
             ExecHG("init .");
         }
@@ -37,7 +37,7 @@ namespace HgAdapter.Tests {
         [TearDown]
         public virtual void TearDown() {
             if(Directory.Exists(TempRepoDir))
-                Directory.Delete(TempRepoDir, true);        
+                Directory.Delete(TempRepoDir, true);
         }
 
         protected void ExecAdapter(params object[] args) {
@@ -70,9 +70,9 @@ namespace HgAdapter.Tests {
         }
 
         protected void ExecHG(string args) {
-            Process.Start(new ProcessStartInfo { 
-                FileName = "hg.exe", 
-                Arguments = args, 
+            Process.Start(new ProcessStartInfo {
+                FileName = "hg.exe",
+                Arguments = args,
                 WorkingDirectory = TempRepoDir,
                 UseShellExecute = false,
                 CreateNoWindow = true

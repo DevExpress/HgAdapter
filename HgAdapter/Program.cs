@@ -107,10 +107,10 @@ namespace HgAdapter {
             State result = null;
 
             try {
-                var serializer = new XmlSerializer(typeof(State));                
+                var serializer = new XmlSerializer(typeof(State));
                 using(var stream = File.OpenRead(_stateFileName)) {
                     result = (State)serializer.Deserialize(stream);
-                }                
+                }
             } catch {
             }
 
@@ -131,7 +131,7 @@ namespace HgAdapter {
 
             var serializer = new XmlSerializer(typeof(State));
             using(var writer = new StreamWriter(_stateFileName)) {
-                serializer.Serialize(writer, _state); 
+                serializer.Serialize(writer, _state);
             }
         }
 
@@ -161,7 +161,7 @@ namespace HgAdapter {
                 }
             }
         }
-      
+
         void GetSource(DateTime integrationDate, string targetPath) {
             var dateStr = integrationDate.ToString("s");
             _logger.PutToFile("getting source for date " + dateStr);
@@ -190,7 +190,7 @@ namespace HgAdapter {
         }
 
         static DateTime ParseDate(string text) {
-            switch(text) { 
+            switch(text) {
                 case "(NOW)":
                     return DateTime.Now;
                 case "(MAX)":
@@ -199,12 +199,12 @@ namespace HgAdapter {
             return DateTime.Parse(text);
         }
 
-        string CalcFileDifferentiator() { 
+        string CalcFileDifferentiator() {
             var key = String.Join("|", _extra.RepoPath, _extra.RevSet);
             using(var sha1 = new SHA1Managed()) {
                 var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(key));
                 return String.Join("", hash.Select(b => b.ToString("x2")));
-            }        
+            }
         }
 
         string NormalizeInclude(string value) {
@@ -229,7 +229,7 @@ namespace HgAdapter {
                         stream.Read(bytes, 0, 3);
                         if(Encoding.UTF8.GetPreamble().SequenceEqual(bytes))
                             throw new Exception("Unicode BOM detected in " + path);
-                    }                    
+                    }
                 }
 
                 if(!Path.IsPathRooted(path))
@@ -245,8 +245,8 @@ namespace HgAdapter {
 
             try {
                 File.Delete(_tempListFile);
-            } catch { 
-            }        
+            } catch {
+            }
         }
 
     }

@@ -108,7 +108,7 @@ namespace HgAdapter {
             var allMerges = GetModificationsCore(revset, null, true, false);
             foreach(var entry in allMerges.Entries) {
                 if(DoesMergeAffectSubset(entry.Hash, include)) {
-                    entry.PathItems = new List<PathInfo> { 
+                    entry.PathItems = new List<PathInfo> {
                         new PathInfo {
                             Action = "Merge",
                             Path = "-"

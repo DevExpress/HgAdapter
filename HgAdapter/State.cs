@@ -17,7 +17,7 @@ namespace HgAdapter {
         public List<Checkpoint> Checkpoints = new List<Checkpoint>();
 
         public void AddCheckpoint(DateTime date, string tip) {
-            Checkpoints.Add(new Checkpoint { 
+            Checkpoints.Add(new Checkpoint {
                 Date = date,
                 Tip = tip
             });
@@ -56,7 +56,7 @@ namespace HgAdapter {
             return new Range {
                 Start = minHash,
                 End = maxHash
-            };        
+            };
         }
 
         public class Checkpoint {

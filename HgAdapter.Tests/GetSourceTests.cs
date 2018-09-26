@@ -45,7 +45,7 @@ namespace HgAdapter.Tests {
         [TestCase("between")]
         [TestCase("at second")]
         [TestCase("after second")]
-        public void SpecificDates(string scenario) {            
+        public void SpecificDates(string scenario) {
             var date1 = new DateTime(2001, 01, 01, 9, 0, 0);
             CommitFile("1", "x", "x");
             State.AddCheckpoint(date1, "8849afd50f950ce7f0fb93eead5260604e860246");
@@ -97,7 +97,7 @@ namespace HgAdapter.Tests {
         public void SubDir() {
             CommitFile("file1", "x", "x");
             ExecAdapter(GETSOURCE, _targetDir, "(MAX)", "--subdir=subdir");
-            Assert.IsTrue(File.Exists(Path.Combine(_targetDir, "subdir", "file1")));        
+            Assert.IsTrue(File.Exists(Path.Combine(_targetDir, "subdir", "file1")));
         }
 
         [Test]
