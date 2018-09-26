@@ -18,19 +18,25 @@ namespace HgAdapter {
             _logger = logger;
         }
 
-        public void WaitWhileInTransaction() {
+        public bool WaitWhileInTransaction() {
+            var wasInTransaction = false;
             var storePath = GetStorePath();
             var lockPath = Path.Combine(storePath, "lock");
             var journalPath = Path.Combine(storePath, "journal");
 
             while(File.Exists(lockPath) || File.Exists(journalPath)) {
+                wasInTransaction = true;
                 _logger.PutToFile("transaction in progress, waiting...");
                 Thread.Sleep(1000);
             }
+
+            return wasInTransaction;
         }
 
         public bool HasRepoChangedSince(DateTime date) {
-            WaitWhileInTransaction();
+            var wasInTransaction = WaitWhileInTransaction();
+            if(wasInTransaction)
+                return true;
 
             var prevJournalPath = Path.Combine(GetStorePath(), "undo");
             if(!File.Exists(prevJournalPath))
