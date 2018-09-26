@@ -108,7 +108,7 @@ namespace HgAdapter.Tests {
                 ExecAdapter(GETSOURCE, ".", "(MAX)");
             });
 
-            Assert.That(AdapterOutput, Is.StringContaining("[ERROR] Target path must be rooted"));
+            Assert.That(AdapterOutput, Does.Contain("[ERROR] Target path must be rooted"));
         }
 
         [Test]
@@ -146,7 +146,7 @@ namespace HgAdapter.Tests {
                 });
             });
 
-            Assert.That(AdapterOutput, Is.StringContaining("[ERROR] Unicode BOM detected"));
+            Assert.That(AdapterOutput, Does.Contain("[ERROR] Unicode BOM detected"));
         }
 
         [Test]
