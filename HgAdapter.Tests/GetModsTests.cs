@@ -77,8 +77,8 @@ namespace HgAdapter.Tests {
             CommitFile("file1", "user1", "message1");
             State.AddCheckpoint(DateTime.Now, "c8143034b60fbc51883eb11cd20592b92f7d3dfb");
 
-            Thread.Sleep(1000);
-            ExecAdapter(GETMODS, DateTime.Now.AddMinutes(1), DateTime.Now);
+            var prevIntegrationDate = DateTime.Now.AddDays(1);
+            ExecAdapter(GETMODS, prevIntegrationDate.AddMinutes(1), prevIntegrationDate);
 
             Assert.IsTrue(LoggerOutput.Any(line => line.StartsWith("repo not changed")));
         }
