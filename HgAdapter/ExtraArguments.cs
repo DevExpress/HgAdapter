@@ -12,6 +12,7 @@ namespace HgAdapter {
         public string RevSet { get; private set; }
         public string Include { get; private set; }
         public string SubDir { get; private set; }
+        public int TimeoutInMilliseconds { get; private set; }
 
         public ExtraArguments(string[] argv) {
             foreach(var arg in argv) {
@@ -23,6 +24,8 @@ namespace HgAdapter {
                     Include = GetValue(arg);
                 else if(arg.StartsWith("--subdir"))
                     SubDir = GetValue(arg);
+                else if(arg.StartsWith("--timeout"))
+                    TimeoutInMilliseconds = Int32.Parse(GetValue(arg));
             }
 
             if(String.IsNullOrEmpty(RepoPath))
@@ -30,6 +33,9 @@ namespace HgAdapter {
 
             if(String.IsNullOrEmpty(RevSet))
                 RevSet = "branch(default)";
+
+            if(TimeoutInMilliseconds == default)
+                TimeoutInMilliseconds = Int32.MaxValue;
         }
 
         static string GetValue(string arg) {

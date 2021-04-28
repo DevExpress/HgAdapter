@@ -104,6 +104,22 @@ namespace HgAdapter.Tests {
             Assert.IsTrue(waitCount > 0);
         }
 
+        [Test]
+        public void RepoNotChangedOptimization_LockedRepo_Timeout() {
+            CommitFile("file1", "user1", "message1");
+            State.AddCheckpoint(DateTime.Now.AddMinutes(-5), "c8143034b60fbc51883eb11cd20592b92f7d3dfb");
+            var waitCount = 0;
+
+            var lockPath = Path.Combine(TempRepoDir, ".hg/store/lock");
+            File.WriteAllText(lockPath, "user:123");
+            try {
+                ExecAdapter(GETMODS, DateTime.Now, DateTime.Now.AddMinutes(-1), $"--timeout={TimeSpan.FromSeconds(3).TotalMilliseconds}");
+            } finally {
+                File.Delete(lockPath);
+            }
+            waitCount = LoggerOutput.Count(line => line.Contains("transaction in progress"));
+            Assert.IsTrue(waitCount < 4);
+        }
 
         [Test]
         public void NoChanges() {
