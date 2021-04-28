@@ -44,9 +44,10 @@ namespace HgAdapter {
             return wasInTransaction;
         }
 
-        public bool HasRepoChangedSince(DateTime date, out bool changeInProgress) {
+        public bool HasRepoChangedSince(DateTime date) {
+            bool changeInProgress;
             var wasInTransaction = WaitWhileInTransaction(out changeInProgress);
-            if(wasInTransaction)
+            if(wasInTransaction || changeInProgress)
                 return true;
 
             var prevJournalPath = Path.Combine(GetStorePath(), "undo");

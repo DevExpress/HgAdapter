@@ -56,19 +56,13 @@ namespace HgAdapter {
                     _logger.PutToFile("checking modifications from " + prevIntegrationDate.ToString("s") + " to " + integrationDate.ToString("s"));
 
                     const int changeCheckDiff = -123;
-                    bool repoChangeIsInProgress = false;
-                    if(isInitialCheck || new HgInternals(_extra.RepoPath, this._extra.TimeoutInMilliseconds, _logger).HasRepoChangedSince(prevIntegrationDate.AddSeconds(changeCheckDiff), out repoChangeIsInProgress)) {
-                        if(repoChangeIsInProgress) {
-                            this._logger.PutToFile("stub checkpoint: " + prevTip);
-                            this._state.AddCheckpoint(prevIntegrationDate + TimeSpan.FromSeconds(1), prevTip);
+                    if(isInitialCheck || new HgInternals(_extra.RepoPath, this._extra.TimeoutInMilliseconds, _logger).HasRepoChangedSince(prevIntegrationDate.AddSeconds(changeCheckDiff))) {
+                        var newTip = hg.GetTip(_extra.RevSet, prevTip);
+                        if(!String.IsNullOrEmpty(newTip) && newTip != prevTip) {
+                            _logger.PutToFile("new checkpoint: " + newTip);
+                            _state.AddCheckpoint(integrationDate, newTip);
                         } else {
-                            var newTip = hg.GetTip(_extra.RevSet, prevTip);
-                            if(!String.IsNullOrEmpty(newTip) && newTip != prevTip) {
-                                _logger.PutToFile("new checkpoint: " + newTip);
-                                _state.AddCheckpoint(integrationDate, newTip);
-                            } else {
-                                _logger.PutToFile("no new changesets");
-                            }
+                            _logger.PutToFile("no new changesets");
                         }
                     }
 
