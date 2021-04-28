@@ -60,7 +60,7 @@ namespace HgAdapter {
                     if(isInitialCheck || new HgInternals(_extra.RepoPath, this._extra.TimeoutInMilliseconds, _logger).HasRepoChangedSince(prevIntegrationDate.AddSeconds(changeCheckDiff), out repoChangeIsInProgress)) {
                         if(repoChangeIsInProgress) {
                             this._logger.PutToFile("stub checkpoint: " + prevTip);
-                            this._state.AddCheckpoint(integrationDate, prevTip);
+                            this._state.AddCheckpoint(prevIntegrationDate + TimeSpan.FromSeconds(1), prevTip);
                         } else {
                             var newTip = hg.GetTip(_extra.RevSet, prevTip);
                             if(!String.IsNullOrEmpty(newTip) && newTip != prevTip) {
