@@ -34,7 +34,7 @@ namespace HgAdapter {
             if(String.IsNullOrEmpty(RevSet))
                 RevSet = "branch(default)";
 
-            if(TimeoutInMilliseconds == default)
+            if(TimeoutInMilliseconds == 0)
                 TimeoutInMilliseconds = Int32.MaxValue;
         }
 
