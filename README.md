@@ -7,7 +7,7 @@ Implements the [external source control](http://cruisecontrolnet.org/projects/cc
 
 Usage:
 
-    GETMODS {date|(NOW)} prev_date --repo=path [--revset=revset] [--include=pattern]
+    GETMODS {date|(NOW)} prev_date --repo=path [--revset=revset] [--include=pattern] [--timeout=number]
     GETSOURCE target_path {max_date|(MAX)} --repo=path [--revset=revset] [--include=pattern] [--subdir=path]
     
 See: [revsets](http://www.selenic.com/hg/help/revsets), [patterns](http://www.selenic.com/hg/help/patterns)
