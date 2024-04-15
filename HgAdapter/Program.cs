@@ -79,6 +79,20 @@ namespace HgAdapter {
                 }
 
 
+                if(action == "HASCHANGES") {
+                    var prevIntegrationDate = ParseDate(args[1]);
+                    var prevTip = _state.GetTip();
+                    var isInitialCheck = String.IsNullOrEmpty(prevTip);
+
+                    _logger.PutToFile("checking for changes from " + prevIntegrationDate.ToString("s"));
+
+                    const int changeCheckDiff = -123;
+                    bool haschanges = isInitialCheck || new HgInternals(_extra.RepoPath, this._extra.TimeoutInMilliseconds, _logger).HasRepoChangedSince(prevIntegrationDate.AddSeconds(changeCheckDiff));
+
+                    StdOut.Write(haschanges);
+                    return 0;
+                }
+
                 if(action == "GETSOURCE") {
                     // Executed on a worker VM
                     // State changes are not saved
